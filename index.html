@@ -6,6 +6,7 @@
   <title>Fruit Slice • Кликер</title>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    
     body {
       background: radial-gradient(circle at 10% 20%, #1a2a1a, #0a140a);
       font-family: 'Segoe UI', system-ui, sans-serif;
@@ -20,6 +21,68 @@
       -webkit-overflow-scrolling:touch;
       transition: background 0.3s ease;
     }
+    
+    /* Тема Радужная */
+    body.rainbow-bg {
+      animation: rainbowWave 0.5s infinite;
+    }
+    @keyframes rainbowWave {
+      0% { background: #ff0000; }
+      16% { background: #ff8800; }
+      33% { background: #ffff00; }
+      50% { background: #00ff00; }
+      66% { background: #0088ff; }
+      83% { background: #8800ff; }
+      100% { background: #ff0000; }
+    }
+    
+    /* Тема Матрица */
+    body.matrix-bg {
+      background: #000000 !important;
+      position: relative;
+    }
+    body.matrix-bg::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(0deg, #0f0 0px, #0f0 1px, transparent 1px, transparent 3px);
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 0;
+      animation: matrixScan 4s linear infinite;
+    }
+    @keyframes matrixScan {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100%; }
+    }
+    
+    .matrix-digits {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .matrix-digit {
+      position: absolute;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 1rem;
+      opacity: 0.8;
+      animation: matrixFall linear infinite;
+      text-shadow: 0 0 5px #0f0;
+    }
+    @keyframes matrixFall {
+      0% { transform: translateY(-100vh); opacity: 0.8; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    
     body.theme-default { background: radial-gradient(circle at 10% 20%, #1a2a1a, #0a140a); }
     body.theme-ocean { background: radial-gradient(circle at 10% 20%, #0a2a3a, #041a2a); }
     body.theme-fire { background: radial-gradient(circle at 10% 20%, #3a1a1a, #2a0a0a); }
@@ -32,28 +95,7 @@
       50%{background-color:#00ff00;} 66%{background-color:#0088ff;} 83%{background-color:#8800ff;}
       100%{background-color:#ff0000;}
     }
-    body::before {
-      content: "";
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      background-image: radial-gradient(2px 2px at 5% 8%, #fff, rgba(0,0,0,0)),
-        radial-gradient(2px 2px at 15% 25%, #ffeb3b, rgba(0,0,0,0)),
-        radial-gradient(3px 3px at 25% 10%, #fff, rgba(0,0,0,0));
-      background-size: 300px 300px;
-      pointer-events: none;
-      z-index:0;
-      animation: twinkle 4s infinite alternate;
-    }
-    @keyframes twinkle { 0%{opacity:0.7;} 100%{opacity:1;} }
-
-    @keyframes rainbowPulse {
-      0%{border-color:#f00;box-shadow:0 0 30px #f00;} 16%{border-color:#f80;box-shadow:0 0 30px #f80;}
-      33%{border-color:#ff0;box-shadow:0 0 30px #ff0;} 50%{border-color:#0f0;box-shadow:0 0 30px #0f0;}
-      66%{border-color:#08f;box-shadow:0 0 30px #08f;} 83%{border-color:#80f;box-shadow:0 0 30px #80f;}
-      100%{border-color:#f00;box-shadow:0 0 30px #f00;}
-    }
-    .rainbow-active { animation: rainbowPulse 1.5s infinite; }
-
+    
     .flying-emoji {
       position: fixed; z-index: 150; pointer-events: none; font-size: 2rem;
       animation: flyAcross 2s linear forwards;
@@ -63,59 +105,152 @@
       100%{ transform: translate(calc(100vw - 50px), calc(-200px)) rotate(720deg); opacity:0; }
     }
 
-    .profile-cloud {
-      position:fixed; top:1rem; right:1rem; z-index:100; cursor:pointer;
-      filter:drop-shadow(0 8px 16px rgba(0,0,0,0.5)); display:flex; align-items:center; gap:0.4rem;
-      background: rgba(255,150,50,0.3); backdrop-filter:blur(10px); border-radius:4rem;
-      padding:0.3rem 1rem 0.3rem 0.7rem; border:2px solid #ff9800;
-      box-shadow:0 0 25px #ff9800,0 0 15px #ffcc80; color:white;
+    /* Профиль и меню */
+    .top-bar {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      left: 1rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      z-index: 100;
     }
-    .cloud-icon { font-size:2rem; filter:drop-shadow(0 0 8px #fff); }
-    .cloud-text { font-weight:bold; color:#fff; text-shadow:0 0 15px #ff9800; letter-spacing:0.5px; font-size:0.85rem; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .profile-cloud, .menu-btn {
+      background: rgba(255,150,50,0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 4rem;
+      padding: 0.3rem 1rem 0.3rem 0.7rem;
+      border: 2px solid #ff9800;
+      box-shadow: 0 0 25px #ff9800, 0 0 15px #ffcc80;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .profile-cloud { margin-left: auto; }
+    .menu-btn { padding: 0.3rem 0.8rem; font-size: 1.5rem; }
+    .cloud-icon { font-size: 2rem; filter: drop-shadow(0 0 8px #fff); }
+    .cloud-text { font-weight: bold; color: #fff; text-shadow: 0 0 15px #ff9800; font-size: 0.85rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    .modal-overlay {
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.8); backdrop-filter:blur(6px);
-      display:none; justify-content:center; align-items:center; z-index:200;
+    /* Меню-панель */
+    .menu-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(20px);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: menuSlideIn 0.3s ease;
     }
-    .modal-overlay.active { display:flex; }
-    .modal-container { display:flex; flex-direction:column; align-items:center; gap:0.8rem; width:100%; max-width:340px; }
-    .modal-content {
-      background:linear-gradient(160deg,#2d3a1f,#1b2a0c);
-      border-radius:1.5rem; padding:1.2rem; width:100%; max-height:65vh; overflow-y:auto;
-      color:#f0f7da; position:relative; box-shadow:0 0 55px #ff9800,0 0 30px #8bc34a;
+    .menu-panel.active { display: flex; }
+    @keyframes menuSlideIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
-    .close-modal { position:absolute; top:0.3rem; right:0.8rem; background:none; border:none; font-size:1.8rem; color:#aed581; cursor:pointer; z-index:10; }
+    .menu-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 80%;
+      max-width: 300px;
+    }
+    .menu-item {
+      background: linear-gradient(145deg, #2d3a1f, #141e0a);
+      border: 2px solid #ff9800;
+      border-radius: 2rem;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ffcc80;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .menu-item:hover { transform: scale(1.02); background: #3a4d20; }
+    .menu-item.disabled {
+      background: #2a1a1a;
+      border-color: #ff4444;
+      color: #ff4444;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    .menu-item.disabled:hover { transform: none; }
+    .menu-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,100,100,0.5);
+      border: none;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+    }
 
-    .tab-panel { display:flex; gap:0.3rem; justify-content:center; margin-top:0.3rem; flex-wrap:wrap; }
-    .tab-btn {
-      background: transparent; border: 2px solid #8bc34a; color: #c2e0a8; font-size: 0.8rem;
-      font-weight: 600; padding: 0.4rem 0.8rem; border-radius: 2rem; cursor: pointer; transition: 0.2s;
+    /* Страницы контента (как новый сайт) */
+    .content-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(160deg, #1a2a1a, #0a1a0a);
+      z-index: 300;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      animation: pageSlideIn 0.3s ease;
     }
-    .tab-btn.active { background: #ff9800; color: #1e3000; border-color: #ff9800; }
-
-    .skin-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0.6rem; margin-top:0.5rem; }
-    .skin-item {
-      background:#1d2b12; border:2px solid #8bc34a; border-radius:1rem; padding:0.6rem 0.2rem; text-align:center; cursor:pointer; font-size:2rem; transition:0.2s;
+    .content-page.active { display: flex; }
+    @keyframes pageSlideIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
     }
-    .skin-item.equipped { border-color:#ff9800; box-shadow:0 0 15px #ff9800; background:#3a4d20; }
-    .skin-item.locked { opacity:0.5; filter:grayscale(0.5); }
-    .skin-price { font-size:0.6rem; color:#ffcc80; }
-    .skin-owned { font-size:0.6rem; color:#8bc34a; }
-
-    .quest-item {
-      background:#1d2b12; border:1px solid #8bc34a; border-radius:1rem; padding:0.5rem 0.8rem; margin-bottom:0.4rem;
-      color:#ffcc80; font-size:0.8rem;
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #ff9800;
     }
-    .quest-done { opacity:0.6; text-decoration:line-through; }
+    .content-header h2 { color: #ffcc80; }
+    .content-close {
+      background: rgba(255,100,100,0.5);
+      border: none;
+      font-size: 1.8rem;
+      color: white;
+      cursor: pointer;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+    }
+    .content-page .settings-bar {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 301;
+    }
 
     .game-wrapper {
-      width:100%; max-width:500px; background:rgba(20,30,15,0.75); backdrop-filter:blur(18px);
-      border:2px solid #ff9800; border-radius:2.5rem; padding:1.2rem;
-      box-shadow:0 30px 50px rgba(20,30,5,0.8),0 0 0 2px #ff9800,inset 0 0 30px rgba(255,152,0,0.3);
-      display:flex; flex-direction:column; align-items:center; gap:1rem; position:relative; z-index:2; margin-bottom:2rem;
+      width: 100%; max-width: 500px; background: rgba(20,30,15,0.75); backdrop-filter: blur(18px);
+      border: 2px solid #ff9800; border-radius: 2.5rem; padding: 1.2rem;
+      box-shadow: 0 30px 50px rgba(20,30,5,0.8),0 0 0 2px #ff9800,inset 0 0 30px rgba(255,152,0,0.3);
+      display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2; margin-bottom: 2rem;
+      margin-top: 4rem;
     }
-    h1 { font-size:clamp(1.1rem,3.5vw,1.8rem); font-weight:700; background:linear-gradient(180deg,#ff9800,#ffcc80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-shadow:0 0 20px #ff9800,0 0 35px #ffcc80; text-align:center; }
+    h1 { font-size: clamp(1.1rem,3.5vw,1.8rem); font-weight:700; background:linear-gradient(180deg,#ff9800,#ffcc80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-shadow:0 0 20px #ff9800,0 0 35px #ffcc80; text-align:center; }
 
     .score-display {
       background:#1e2a14; border-radius:4rem; padding:0.5rem 1.5rem; border:2px solid #ff9800;
@@ -131,7 +266,6 @@
       background:radial-gradient(circle at 30% 30%,#c8e6c9,#4caf50); width:120px; height:120px; border-radius:50%;
       box-shadow:0 0 60px #4caf50,0 15px 25px rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center;
       font-size:3.5rem; cursor:pointer; transition:transform 0.05s; user-select:none; border:3px solid #ff9800;
-      -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
       will-change: transform;
     }
     #click-core:active { transform:scale(0.9); filter:brightness(1.4); }
@@ -145,13 +279,13 @@
 
     .stats-panel {
       width:100%; background:rgba(15,25,10,0.7); backdrop-filter:blur(12px); border-radius:1.5rem; padding:0.8rem;
-      display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; border:1px solid #ff9800; box-shadow:0 0 15px #ff9800; color:#dcedc8;
+      display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; border:1px solid #ff9800; color:#dcedc8;
     }
-    .stat-item { font-size:0.7rem; text-align:center; display:flex; flex-direction:column; gap:0.2rem; }
+    .stat-item { font-size:0.7rem; text-align:center; }
     .stat-value { font-size:1.2rem; font-weight:700; color:#fff; text-shadow:0 0 8px #ff9800; background:#1e2a14; padding:0.15rem 0.5rem; border-radius:1.5rem; }
 
-    .boost-bar { width:100%; background:#1d2b12; border:2px solid #ff9800; border-radius:2rem; padding:0.5rem 0.8rem; display:flex; justify-content:space-between; align-items:center; box-shadow:0 0 10px #ff9800; gap:0.5rem; }
-    .boost-btn { background:radial-gradient(circle at 20% 20%,#ff9800,#c56000); border:2px solid #ffcc80; color:white; font-weight:bold; padding:0.3rem 0.8rem; border-radius:2rem; cursor:pointer; font-size:0.8rem; flex-shrink:0; }
+    .boost-bar { width:100%; background:#1d2b12; border:2px solid #ff9800; border-radius:2rem; padding:0.5rem 0.8rem; display:flex; justify-content:space-between; align-items:center; gap:0.5rem; }
+    .boost-btn { background:radial-gradient(circle at 20% 20%,#ff9800,#c56000); border:2px solid #ffcc80; color:white; font-weight:bold; padding:0.3rem 0.8rem; border-radius:2rem; cursor:pointer; font-size:0.8rem; }
     .boost-btn:disabled { opacity:0.4; cursor:not-allowed; }
     .boost-timer { color:#ffcc80; font-weight:bold; font-size:0.9rem; }
 
@@ -174,12 +308,12 @@
     .buy-card-btn { background:#8d6e63; border:1px solid #ffcc80; color:white; padding:0.2rem 0.6rem; border-radius:1rem; cursor:pointer; font-size:0.7rem; margin-top:0.2rem; }
     .buy-card-btn:disabled { opacity:0.4; }
 
-    .upgrade-card { background:linear-gradient(145deg,#2d3a1f,#141e0a); border-radius:1.5rem; padding:0.6rem 0.8rem; display:flex; justify-content:space-between; align-items:center; border:2px solid #ff9800; box-shadow:0 0 10px #ff9800; width:100%; gap:0.5rem; }
+    .upgrade-card { background:linear-gradient(145deg,#2d3a1f,#141e0a); border-radius:1.5rem; padding:0.6rem 0.8rem; display:flex; justify-content:space-between; align-items:center; border:2px solid #ff9800; width:100%; gap:0.5rem; }
     .upgrade-info { flex:1; }
-    .upgrade-info h4 { font-size:0.9rem; }
-    .upgrade-info p { font-size:0.75rem; }
+    .upgrade-info h4 { font-size:0.9rem; color:#ffb74d; }
+    .upgrade-info p { font-size:0.75rem; color:#c5e0b4; }
     .buy-btn { background:radial-gradient(circle at 20% 20%,#ff9800,#e65100); border:2px solid #ffcc80; color:white; font-weight:bold; padding:0.4rem 1rem; border-radius:2rem; cursor:pointer; font-size:0.85rem; }
-    .buy-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .buy-btn:disabled { opacity:0.4; }
 
     .progress-dots { display:flex; gap:0.2rem; margin-top:0.3rem; }
     .dot { width:8px; height:8px; border-radius:50%; background:#3a4d20; border:1px solid #ff9800; }
@@ -188,17 +322,11 @@
     .reset-btn { background:transparent; border:1px solid #aed581; color:#dcedc8; padding:0.3rem 0.8rem; border-radius:2rem; font-size:0.75rem; cursor:pointer; }
 
     .toast {
-      position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#ff4444; color:white;
-      padding:0.8rem 1.5rem; border-radius:2rem; z-index:999; font-weight:bold; box-shadow:0 0 30px #ff0000; animation:toastIn 0.3s ease; max-width:90vw; text-align:center;
+      position:fixed; top:80px; left:50%; transform:translateX(-50%); background:#ff4444; color:white;
+      padding:0.8rem 1.5rem; border-radius:2rem; z-index:999; font-weight:bold; animation:toastIn 0.3s ease; max-width:90vw; text-align:center;
     }
     .toast.green { background:#4caf50; }
-    @keyframes toastIn { from{opacity:0;top:0;} to{opacity:1;top:20px;} }
-
-    .easter-egg {
-      position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:500;
-      display:flex; flex-direction:column; justify-content:center; align-items:center;
-      font-size:1.5rem; color:white; text-align:center; pointer-events:none; padding:1rem;
-    }
+    @keyframes toastIn { from{opacity:0;top:60px;} to{opacity:1;top:80px;} }
 
     .admin-panel {
       background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); border:2px solid #ff9800; border-radius:1.5rem;
@@ -207,9 +335,8 @@
     .numpad { display:grid; grid-template-columns:repeat(3,1fr); gap:0.4rem; margin-top:0.5rem; }
     .numpad-btn {
       background:#1d2b12; border:2px solid #ff9800; color:#ffcc80; font-size:1.3rem;
-      padding:0.6rem; border-radius:1rem; cursor:pointer; transition:0.2s; min-height:44px;
+      padding:0.6rem; border-radius:1rem; cursor:pointer; min-height:44px;
     }
-    .numpad-btn:hover { background:#ff9800; color:#1e3000; }
     .numpad-display {
       background:#0a0a0a; border:2px solid #ff9800; border-radius:1rem; padding:0.6rem;
       text-align:center; font-size:1.8rem; color:#ff9800; letter-spacing:0.5rem; margin-bottom:0.5rem;
@@ -234,23 +361,23 @@
       transition:0.2s;
     }
     .settings-btn.muted { opacity:0.5; }
-    .settings-btn:hover { background:#ff9800; color:#1e3000; }
 
-    .theme-preview {
-      position:fixed; bottom:4rem; right:0.8rem;
-      background:rgba(0,0,0,0.9); border-radius:1rem; padding:0.5rem;
-      display:flex; flex-direction:column; gap:0.3rem; z-index:101;
-      border:2px solid #ff9800;
+    .skin-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0.6rem; margin-top:0.5rem; }
+    .skin-item {
+      background:#1d2b12; border:2px solid #8bc34a; border-radius:1rem; padding:0.6rem 0.2rem; text-align:center; cursor:pointer; font-size:2rem; transition:0.2s;
     }
-    .theme-preview.hidden { display: none; }
-    .theme-option {
-      padding:0.3rem 0.8rem; border-radius:0.5rem; cursor:pointer;
-      font-size:0.7rem; text-align:center; transition:0.1s;
+    .skin-item.equipped { border-color:#ff9800; box-shadow:0 0 15px #ff9800; background:#3a4d20; }
+    .skin-item.locked { opacity:0.5; filter:grayscale(0.5); }
+    .skin-price { font-size:0.6rem; color:#ffcc80; }
+
+    .quest-item {
+      background:#1d2b12; border:1px solid #8bc34a; border-radius:1rem; padding:0.5rem 0.8rem; margin-bottom:0.4rem;
+      color:#ffcc80; font-size:0.8rem;
     }
-    .theme-option:hover { transform:scale(1.05); }
+    .quest-done { opacity:0.6; text-decoration:line-through; }
 
     @media (max-width:400px) {
-      .game-wrapper { padding:0.8rem; border-radius:2rem; gap:0.8rem; }
+      .game-wrapper { padding:0.8rem; border-radius:2rem; gap:0.8rem; margin-top: 5rem; }
       h1 { font-size:1rem; }
       .score-display { font-size:1.4rem; padding:0.4rem 1.2rem; }
       #click-core { width:100px; height:100px; font-size:3rem; }
@@ -259,23 +386,56 @@
   </style>
 </head>
 <body class="theme-default">
-<div class="profile-cloud" id="profileCloud"><span class="cloud-icon">🍎</span><span class="cloud-text" id="cloudLabel">Войти</span></div>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-container">
-    <div class="modal-content" id="skinModalContent" style="display:none;"><button class="close-modal" id="closeSkinModal">&times;</button><h3 style="color:#ffcc80;text-align:center;">🍎 Скины</h3><div class="skin-grid" id="skinGrid"></div></div>
-    <div class="modal-content" id="accountModalContent" style="display:none;"><button class="close-modal" id="closeAccountModal">&times;</button><h3 style="color:#ffcc80;">👤 Аккаунт</h3><p id="accountNameDisplay" style="margin:1rem 0;"></p><button class="auth-btn" id="logoutBtn">🚪 Выйти</button><span style="font-size:2rem;">📱</span></div>
-    <div class="modal-content" id="messengerModalContent" style="display:none;"><button class="close-modal" id="closeMessengerModal">&times;</button><h3 style="color:#ffcc80;">💬 Мессенджер</h3><p style="margin:1rem 0;">📢 Подпишись на канал и будь в центре новостей первее всех! 📢</p><p><a href="https://max.ru/join/fBDzHfDQn03gGn94sdrmWZwTQ-sM5dk-on07HWtBx7w" target="_blank" rel="noopener" style="color:#ffcc80;text-decoration:underline;word-break:break-all;">🔗 Открыть канал в Max</a></p><p style="margin-top:1rem;font-size:2rem;">🍎🥒🍊🎃</p></div>
-    <div class="modal-content" id="dailyModalContent" style="display:none;"><button class="close-modal" id="closeDailyModal">&times;</button><h3 style="color:#ffcc80;text-align:center;">📋 Задания</h3><p style="text-align:center;font-size:0.7rem;color:#aed581;" id="daily-reset-timer"></p><div id="dailyQuestList"></div></div>
-    <div class="modal-content" id="achievementsModalContent" style="display:none;"><button class="close-modal" id="closeAchievementsModal">&times;</button><h3 style="color:#ffcc80;text-align:center;">🏅 Достижения</h3><div id="achievementList"></div></div>
-    <div class="tab-panel" id="tabPanel">
-      <button class="tab-btn active" data-tab="skins">Скины</button>
-      <button class="tab-btn" data-tab="daily">Задания</button>
-      <button class="tab-btn" data-tab="achievements">Достижения</button>
-      <button class="tab-btn" data-tab="account">Аккаунт</button>
-      <button class="tab-btn" data-tab="messenger">💬</button>
-    </div>
+<div class="top-bar">
+  <div class="menu-btn" id="menuBtn">☰</div>
+  <div class="profile-cloud" id="profileCloud"><span class="cloud-icon">🍎</span><span class="cloud-text" id="cloudLabel">Войти</span></div>
+</div>
+
+<!-- Меню-панель -->
+<div class="menu-panel" id="menuPanel">
+  <button class="menu-close" id="menuCloseBtn">✕</button>
+  <div class="menu-items">
+    <div class="menu-item disabled" data-page="casino">🎰 Фруктовое казино <span style="font-size:0.7rem;">(скоро)</span></div>
+    <div class="menu-item" data-page="skins">👕 Скины</div>
+    <div class="menu-item" data-page="themes">🎨 Темы</div>
+    <div class="menu-item" data-page="daily">📅 Задания</div>
+    <div class="menu-item" data-page="achievements">🏅 Достижения</div>
+    <div class="menu-item" data-page="social">💬 Соц сети</div>
   </div>
+</div>
+
+<!-- Страницы контента -->
+<div class="content-page" id="pageSkins">
+  <div class="content-header"><h2>👕 Скины</h2><button class="content-close" data-page="skins">✕</button></div>
+  <div class="skin-grid" id="skinGridContent"></div>
+  <div class="settings-bar" style="position:fixed; bottom:1rem; right:1rem;"><div class="settings-btn" id="soundTogglePage">🔊</div></div>
+</div>
+
+<div class="content-page" id="pageThemes">
+  <div class="content-header"><h2>🎨 Темы</h2><button class="content-close" data-page="themes">✕</button></div>
+  <div class="skin-grid" id="themesGrid"></div>
+  <div class="settings-bar" style="position:fixed; bottom:1rem; right:1rem;"><div class="settings-btn" id="soundTogglePageThemes">🔊</div></div>
+</div>
+
+<div class="content-page" id="pageDaily">
+  <div class="content-header"><h2>📅 Ежедневные задания</h2><button class="content-close" data-page="daily">✕</button></div>
+  <p style="text-align:center;font-size:0.7rem;color:#aed581;" id="daily-reset-timer-page"></p>
+  <div id="dailyQuestListPage"></div>
+  <div class="settings-bar" style="position:fixed; bottom:1rem; right:1rem;"><div class="settings-btn" id="soundTogglePage2">🔊</div></div>
+</div>
+
+<div class="content-page" id="pageAchievements">
+  <div class="content-header"><h2>🏅 Достижения</h2><button class="content-close" data-page="achievements">✕</button></div>
+  <div id="achievementListPage"></div>
+  <div class="settings-bar" style="position:fixed; bottom:1rem; right:1rem;"><div class="settings-btn" id="soundTogglePage3">🔊</div></div>
+</div>
+
+<div class="content-page" id="pageSocial">
+  <div class="content-header"><h2>💬 Соц сети</h2><button class="content-close" data-page="social">✕</button></div>
+  <p style="margin:1rem 0;text-align:center;">📢 Подпишись на канал и будь в центре новостей первее всех! 📢</p>
+  <p style="text-align:center;"><a href="https://max.ru/join/fBDzHfDQn03gGn94sdrmWZwTQ-sM5dk-on07HWtBx7w" target="_blank" style="color:#ffcc80;">🔗 Открыть канал</a></p>
+  <div class="settings-bar" style="position:fixed; bottom:1rem; right:1rem;"><div class="settings-btn" id="soundTogglePage4">🔊</div></div>
 </div>
 
 <div class="game-wrapper" id="gameWrapper">
@@ -283,25 +443,26 @@
   <div class="score-display"><span class="pixel-coin">🍎</span><span id="coin-counter">0</span></div>
   <div style="position:relative;" id="click-container"><div id="click-core">🥒</div></div>
   <div class="boost-bar"><span style="color:#ffcc80;font-size:0.8rem;">⚡ БУСТ x5</span><span class="boost-timer" id="boostTimer">00:00</span><button class="boost-btn" id="boostBtn">🔥</button></div>
-  <div class="boost-bar rainbow-active" id="rainbowBoostBar" style="display:none;"><span style="color:#fff;font-size:0.8rem;">🌈 РАДУГА x5</span><span class="boost-timer" id="rainbowBoostTimer">00:00</span><button class="boost-btn" id="rainbowBoostBtn">🌈</button></div>
+  <div class="boost-bar" id="rainbowBoostBar" style="display:none;"><span style="color:#fff;font-size:0.8rem;">🌈 РАДУГА x5</span><span class="boost-timer" id="rainbowBoostTimer">00:00</span><button class="boost-btn" id="rainbowBoostBtn">🌈</button></div>
   <div class="stats-panel">
-    <div class="stat-item"><span>🍎 Кликов</span><span class="stat-value" id="stat-total-clicks">0</span></div>
-    <div class="stat-item"><span>🥒 За клик</span><span class="stat-value" id="stat-per-click">1</span></div>
-    <div class="stat-item"><span>⏱️ Авто</span><span class="stat-value" id="stat-auto-per-sec">0</span></div>
-    <div class="stat-item"><span>🕒 Время</span><span class="stat-value" id="stat-playtime">0м</span></div>
+    <div class="stat-item"><span>🍎 Кликов</span><div class="stat-value" id="stat-total-clicks">0</div></div>
+    <div class="stat-item"><span>🥒 За клик</span><div class="stat-value" id="stat-per-click">1</div></div>
+    <div class="stat-item"><span>⏱️ Авто</span><div class="stat-value" id="stat-auto-per-sec">0</div></div>
+    <div class="stat-item"><span>🕒 Время</span><div class="stat-value" id="stat-playtime">0м</div></div>
   </div>
   <div class="card-grid">
     <div class="card-item rare" id="ogCard"><span>✨</span><div class="card-name">OG</div><div class="card-rarity rarity-rare">⚡ Редкая</div><div class="card-status" id="ogStatus">🍎10к</div><button class="buy-card-btn" id="buyOgBtn">💰</button></div>
     <div class="card-item mythic" id="rainbowCard"><span>🌈</span><div class="card-name">Радужный</div><div class="card-rarity rarity-mythic">🌀 Мифик</div><div class="card-status" id="rainbowStatus">🍎15к</div><button class="buy-card-btn" id="buyRainbowBtn">💰</button></div>
     <div class="card-item epic" id="sonicCard"><span>⚡</span><div class="card-name">Сверхзвук</div><div class="card-rarity rarity-epic">⚜️ Эпик</div><div class="card-status" id="sonicStatus">🍎25к</div><button class="buy-card-btn" id="buySonicBtn">💰</button></div>
     <div class="card-item legendary" id="poopCard"><span>💩</span><div class="card-name">Отсылка</div><div class="card-rarity rarity-legendary">🔥 Легендарная</div><div class="card-status" id="poopStatus">🍎100к</div><button class="buy-card-btn" id="buyPoopBtn">💰</button></div>
+    <div class="card-item mythic" id="matrixThemeCard"><span>🔮</span><div class="card-name">Матрица</div><div class="card-rarity rarity-mythic">🌀 Мифик</div><div class="card-status" id="matrixStatus">🍎25к</div><button class="buy-card-btn" id="buyMatrixThemeBtn">💰</button></div>
   </div>
   <div class="upgrade-card">
-    <div class="upgrade-info"><h4 style="color:#ffb74d;">🧃 Соковыжималка</h4><p style="color:#c5e0b4;">+1 за клик</p><div class="progress-dots" id="multiplierProgress"></div></div>
+    <div class="upgrade-info"><h4>🧃 Соковыжималка</h4><p>+1 за клик</p><div class="progress-dots" id="multiplierProgress"></div></div>
     <button class="buy-btn" id="btn-multiplier">🍎 <span id="cost-multiplier">15</span></button>
   </div>
   <div class="upgrade-card">
-    <div class="upgrade-info"><h4 style="color:#ffb74d;">🤖 Авто-кликер</h4><p style="color:#c5e0b4;">+0.5/сек</p><div class="progress-dots" id="autoProgress"></div></div>
+    <div class="upgrade-info"><h4>🤖 Авто-кликер</h4><p>+0.5/сек</p><div class="progress-dots" id="autoProgress"></div></div>
     <button class="buy-btn" id="btn-autoclick">🥒 <span id="cost-autoclick">50</span></button>
   </div>
   <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
@@ -314,21 +475,12 @@
   <h3 style="text-align:center;">🔐 Комбинации</h3>
   <div class="numpad-display" id="numpadDisplay">····</div>
   <div class="numpad" id="numpad"></div>
-  <button class="admin-btn-small" id="numpadSubmit" style="width:100%;margin-top:0.5rem;background:#ff9800;border:none;color:white;padding:0.6rem;border-radius:2rem;cursor:pointer;font-size:1rem;">➡️ Ввод</button>
+  <button id="numpadSubmit" style="width:100%;margin-top:0.5rem;background:#ff9800;border:none;color:white;padding:0.6rem;border-radius:2rem;cursor:pointer;">➡️ Ввод</button>
 </div>
 
 <div class="anti-cheat-indicator" id="antiCheatIndicator"><span>🛡️</span><span id="antiCheatStatus">Защита</span></div>
 <div class="settings-bar">
-  <div class="settings-btn" id="soundToggle">🔊</div>
-  <div class="settings-btn" id="themeToggleBtn">🎨</div>
-</div>
-<div class="theme-preview hidden" id="themePreview">
-  <div class="theme-option" data-theme="default" style="background:#1a2a1a; color:#ffcc80;">🌿 Лес</div>
-  <div class="theme-option" data-theme="ocean" style="background:#0a2a3a; color:#88ccff;">🌊 Океан</div>
-  <div class="theme-option" data-theme="fire" style="background:#3a1a1a; color:#ff8866;">🔥 Огонь</div>
-  <div class="theme-option" data-theme="forest" style="background:#1a3a1a; color:#88ff88;">🌲 Глушь</div>
-  <div class="theme-option" data-theme="night" style="background:#1a1a2a; color:#aa88ff;">🌙 Ночь</div>
-  <div class="theme-option" data-theme="candy" style="background:#3a2a4a; color:#ff88ff;">🍬 Конфетти</div>
+  <div class="settings-btn" id="soundToggleMain">🔊</div>
 </div>
 
 <script>
@@ -340,7 +492,7 @@
     let soundEnabled = true;
     let numpadCode = '';
     let usedPromoCodes = {};
-    let autoTickRequestId = null;
+    let matrixInterval = null;
 
     const allSkins = [
       { emoji: '🥒', name: 'Огурец', price: 0, requiredCard: null },
@@ -349,6 +501,17 @@
       { emoji: '🍊', name: 'Апельсин', price: 8000, requiredCard: null },
       { emoji: '🍌', name: 'Бынан', price: 12000, requiredCard: null },
       { emoji: '💩', name: 'Какашка', price: 10000, requiredCard: 'poopCard' }
+    ];
+
+    const themesList = [
+      { id: 'default', name: '🌿 Базовая', price: 0, class: 'theme-default', requiredCard: null, requiredCardPurchased: null },
+      { id: 'ocean', name: '🌊 Океан', price: 1500, class: 'theme-ocean', requiredCard: null, requiredCardPurchased: null },
+      { id: 'fire', name: '🔥 Огонь', price: 1500, class: 'theme-fire', requiredCard: null, requiredCardPurchased: null },
+      { id: 'forest', name: '🌲 Глушь', price: 1500, class: 'theme-forest', requiredCard: null, requiredCardPurchased: null },
+      { id: 'night', name: '🌙 Ночь', price: 1500, class: 'theme-night', requiredCard: null, requiredCardPurchased: null },
+      { id: 'candy', name: '🍬 Конфетти', price: 1500, class: 'theme-candy', requiredCard: null, requiredCardPurchased: null },
+      { id: 'rainbow', name: '🌈 Радужная', price: 5555, class: 'rainbow-bg', requiredCard: 'rainbowPurchased', requiredCardPurchased: 'rainbowPurchased' },
+      { id: 'matrix', name: '💻 Матрица', price: 5555, class: 'matrix-bg', requiredCard: 'matrixThemeCardPurchased', requiredCardPurchased: 'matrixThemeCardPurchased' }
     ];
 
     const dailyQuests = [
@@ -364,15 +527,6 @@
       { id: 'allSkins', desc: 'Купить все скины', check: s => s.ownedSkins.length >= allSkins.length, reward: 50000 },
     ];
 
-    const themes = [
-      { id: 'default', name: '🌿 Лес', price: 0, class: 'theme-default' },
-      { id: 'ocean', name: '🌊 Океан', price: 2000, class: 'theme-ocean' },
-      { id: 'fire', name: '🔥 Огонь', price: 2000, class: 'theme-fire' },
-      { id: 'forest', name: '🌲 Глушь', price: 2000, class: 'theme-forest' },
-      { id: 'night', name: '🌙 Ночь', price: 2000, class: 'theme-night' },
-      { id: 'candy', name: '🍬 Конфетти', price: 2000, class: 'theme-candy' }
-    ];
-
     const defaultState = () => ({
       coins:0, totalClicks:0, clickMultiplier:1, autoCoinsPerSec:0,
       multiplierCost:15, autoclickCost:50,
@@ -382,7 +536,7 @@
       playStartTime:Date.now(), currentSkin:'🥒', ownedSkins:['🥒'],
       lastBoostTime:0, boostActive:false, boostEndTime:0,
       lastRainbowBoostTime:0, rainbowBoostActive:false, rainbowBoostEndTime:0,
-      ogPurchased:false, rainbowPurchased:false, sonicPurchased:false, poopCardPurchased:false,
+      ogPurchased:false, rainbowPurchased:false, sonicPurchased:false, poopCardPurchased:false, matrixThemeCardPurchased:false,
       prestigeCount:0, prestigeBonus:0,
       dailyProgress: { clicks100:0, upgrade50:0, boost:0 },
       dailyResetDate: new Date().toDateString(),
@@ -403,30 +557,88 @@
     function saveLastUser(u) { let last = JSON.parse(localStorage.getItem(LAST_USERS_KEY) || '[]'); last = last.filter(x => x !== u); last.unshift(u); if (last.length > 3) last.pop(); localStorage.setItem(LAST_USERS_KEY, JSON.stringify(last)); }
     function getLastUsers() { return JSON.parse(localStorage.getItem(LAST_USERS_KEY) || '[]'); }
     function loadUsedPromos() { if(currentUser) { const saved = localStorage.getItem(`promo_${currentUser.username}`); usedPromoCodes[currentUser.username] = saved === 'true'; } }
+    
     function loadUserProgress() {
       if(!currentUser) { state=defaultState(); return; }
       const k=getUserKey(); const saved=localStorage.getItem(k);
-      if(saved){ try{ const d=JSON.parse(saved); state = { ...defaultState(), ...d }; if(!state.playStartTime) state.playStartTime=Date.now(); if(!state.ownedSkins) state.ownedSkins=['🥒']; if(!state.currentSkin) state.currentSkin='🥒'; if(!state.dailyProgress) state.dailyProgress = { clicks100:0, upgrade50:0, boost:0 }; if(!state.dailyResetDate) state.dailyResetDate = new Date().toDateString(); if(!state.claimedAchievements) state.claimedAchievements = []; if(!state.prestigeCount) state.prestigeCount = 0; if(!state.prestigeBonus) state.prestigeBonus = 0; if(state.sonicPurchased===undefined) state.sonicPurchased=false; if(state.poopCardPurchased===undefined) state.poopCardPurchased=false; if(state.multiplierBonusStep===undefined) state.multiplierBonusStep=0; if(state.autoBonusStep===undefined) state.autoBonusStep=0; if(!state.ownedThemes) state.ownedThemes=['default']; if(!state.currentTheme) state.currentTheme='default'; applyTheme(state.currentTheme); checkDailyReset(); } catch(e){state=defaultState();} } else state=defaultState();
+      if(saved){ try{ const d=JSON.parse(saved); state = { ...defaultState(), ...d }; 
+        if(!state.playStartTime) state.playStartTime=Date.now(); 
+        if(!state.ownedSkins) state.ownedSkins=['🥒']; 
+        if(!state.currentSkin) state.currentSkin='🥒'; 
+        if(!state.dailyProgress) state.dailyProgress = { clicks100:0, upgrade50:0, boost:0 }; 
+        if(!state.dailyResetDate) state.dailyResetDate = new Date().toDateString(); 
+        if(!state.claimedAchievements) state.claimedAchievements = []; 
+        if(!state.prestigeCount) state.prestigeCount = 0; 
+        if(!state.prestigeBonus) state.prestigeBonus = 0; 
+        if(state.sonicPurchased===undefined) state.sonicPurchased=false; 
+        if(state.poopCardPurchased===undefined) state.poopCardPurchased=false; 
+        if(state.matrixThemeCardPurchased===undefined) state.matrixThemeCardPurchased=false;
+        if(state.multiplierBonusStep===undefined) state.multiplierBonusStep=0; 
+        if(state.autoBonusStep===undefined) state.autoBonusStep=0; 
+        if(!state.ownedThemes) state.ownedThemes=['default']; 
+        if(!state.currentTheme) state.currentTheme='default'; 
+        applyTheme(state.currentTheme); 
+        checkDailyReset(); 
+      } catch(e){state=defaultState();} } else state=defaultState();
       loadUsedPromos();
     }
-    function checkDailyReset() { const today = new Date().toDateString(); if (state.dailyResetDate !== today) { state.dailyProgress = { clicks100:0, upgrade50:0, boost:0 }; state.dailyResetDate = today; saveUserProgress(); } }
+
+    function startMatrixEffect() {
+      if (matrixInterval) clearInterval(matrixInterval);
+      const matrixContainer = document.querySelector('.matrix-digits');
+      if (matrixContainer) matrixContainer.remove();
+      
+      const container = document.createElement('div');
+      container.className = 'matrix-digits';
+      document.body.appendChild(container);
+      
+      function createDigit() {
+        const digit = document.createElement('div');
+        digit.className = 'matrix-digit';
+        digit.textContent = Math.floor(Math.random() * 2);
+        digit.style.left = Math.random() * 100 + '%';
+        digit.style.animationDuration = (Math.random() * 8 + 2) + 's';
+        digit.style.animationDelay = Math.random() * 5 + 's';
+        digit.style.fontSize = (Math.random() * 24 + 8) + 'px';
+        digit.style.opacity = Math.random() * 0.6 + 0.2;
+        container.appendChild(digit);
+        setTimeout(() => digit.remove(), 10000);
+      }
+      
+      for(let i = 0; i < 150; i++) setTimeout(createDigit, i * 50);
+      matrixInterval = setInterval(createDigit, 80);
+    }
+    
+    function stopMatrixEffect() {
+      if (matrixInterval) { clearInterval(matrixInterval); matrixInterval = null; }
+      const container = document.querySelector('.matrix-digits');
+      if (container) container.remove();
+    }
 
     function applyTheme(themeId) {
-      const theme = themes.find(t => t.id === themeId);
-      if (theme) {
+      document.body.classList.remove('rainbow-bg', 'matrix-bg');
+      stopMatrixEffect();
+      
+      if (themeId === 'rainbow') {
+        document.body.classList.add('rainbow-bg');
+      } else if (themeId === 'matrix') {
+        document.body.classList.add('matrix-bg');
+        startMatrixEffect();
+      } else {
         document.body.className = document.body.className.split(' ').filter(c => !c.startsWith('theme-')).join(' ');
-        document.body.classList.add(theme.class);
+        const theme = themesList.find(t => t.id === themeId);
+        if (theme) document.body.classList.add(theme.class);
       }
     }
 
     const antiCheat = { clickTimes: [], maxClicksPerSecond: 18, violationLevel: 0, penaltyActive: false, penaltyEndTime: 0,
-      checkClick() { if (this.penaltyActive && Date.now() < this.penaltyEndTime) { showToast('🚫 Вы заблокированы!'); return false; } if (this.penaltyActive && Date.now() >= this.penaltyEndTime) { this.penaltyActive = false; } const now = Date.now(); this.clickTimes.push(now); this.clickTimes = this.clickTimes.filter(t => now - t < 1000); if (this.clickTimes.length > this.maxClicksPerSecond) { this.violationLevel++; this.applyPenalty(); return false; } if (this.violationLevel > 0 && this.clickTimes.length <= this.maxClicksPerSecond) { this.violationLevel = Math.max(0, this.violationLevel - 0.05); } return true; },
+      checkClick() { if (this.penaltyActive && Date.now() < this.penaltyEndTime) { showToast('🚫 Вы заблокированы!'); return false; } if (this.penaltyActive && Date.now() >= this.penaltyEndTime) { this.penaltyActive = false; } const now = Date.now(); this.clickTimes.push(now); this.clickTimes = this.clickTimes.filter(t => now - t < 1000); if (this.clickTimes.length > this.maxClicksPerSecond) { this.violationLevel++; this.applyPenalty(); return false; } return true; },
       applyPenalty() { if (this.penaltyActive && Date.now() < this.penaltyEndTime) return; let msg = ''; if (this.violationLevel >= 3) { msg = '💀 ВСЕ ФРУКТЫ КОНФИСКОВАНЫ!'; state.coins = 0; this.violationLevel = 0; } else if (this.violationLevel >= 2) { msg = '⚠️ -30% ФРУКТОВ!'; state.coins -= Math.floor(state.coins * 0.3); } else { msg = '⚠️ -10% ФРУКТОВ!'; state.coins -= Math.floor(state.coins * 0.1); } this.penaltyActive = true; this.penaltyEndTime = Date.now() + 30000; showToast(msg); saveUserProgress(); updateUI(); setTimeout(() => { this.penaltyActive = false; showToast('✅ Штраф снят.'); updateUI(); }, 30000); }
     };
 
     let audioCtx = null;
     function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-    function playSound(type) { if (!soundEnabled) return; try { initAudio(); const now = audioCtx.currentTime; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); if (type === 'click') { osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(400, now+0.1); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now+0.1); osc.start(now); osc.stop(now+0.1); } else if (type === 'purchase') { osc.type='square'; osc.frequency.setValueAtTime(600, now); osc.frequency.setValueAtTime(900, now+0.1); gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now+0.3); osc.start(now); osc.stop(now+0.3); } else if (type === 'card') { osc.type='triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.linearRampToValueAtTime(1200, now+0.5); gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now+0.6); osc.start(now); osc.stop(now+0.6); } else if (type === 'glitch') { for(let i=0;i<8;i++){const g=audioCtx.createGain();const o=audioCtx.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(100+Math.random()*500,now+i*0.05);g.gain.setValueAtTime(0.08,now+i*0.05);g.gain.exponentialRampToValueAtTime(0.01,now+i*0.05+0.05);o.connect(g);g.connect(audioCtx.destination);o.start(now+i*0.05);o.stop(now+i*0.05+0.05);} } } catch(e) {} }
+    function playSound(type) { if (!soundEnabled) return; try { initAudio(); const now = audioCtx.currentTime; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); if (type === 'click') { osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(400, now+0.1); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now+0.1); osc.start(now); osc.stop(now+0.1); } else if (type === 'purchase') { osc.type='square'; osc.frequency.setValueAtTime(600, now); osc.frequency.setValueAtTime(900, now+0.1); gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now+0.3); osc.start(now); osc.stop(now+0.3); } else if (type === 'card') { osc.type='triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.linearRampToValueAtTime(1200, now+0.5); gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now+0.6); osc.start(now); osc.stop(now+0.6); } } catch(e) {} }
 
     function updateUI() {
       document.getElementById('coin-counter').textContent = Math.floor(state.coins);
@@ -440,32 +652,105 @@
       if (state.sonicPurchased) autoVal += 10;
       document.getElementById('stat-auto-per-sec').textContent = autoVal.toFixed(1);
       const elapsed = Math.floor((Date.now()-state.playStartTime)/1000);
-      const hours = Math.floor(elapsed/3600), mins = Math.floor((elapsed%3600)/60), secs = elapsed%60;
-      document.getElementById('stat-playtime').textContent = hours>0 ? `${hours}ч ${mins}м` : `${mins}м ${secs}с`;
+      const mins = Math.floor(elapsed/60), secs = elapsed%60;
+      document.getElementById('stat-playtime').textContent = mins > 60 ? `${Math.floor(mins/60)}ч ${mins%60}м` : `${mins}м ${secs}с`;
       document.getElementById('cost-multiplier').textContent = state.multiplierCost;
       document.getElementById('cost-autoclick').textContent = state.autoclickCost;
       document.getElementById('btn-multiplier').disabled = state.coins < state.multiplierCost;
       document.getElementById('btn-autoclick').disabled = state.coins < state.autoclickCost;
       document.getElementById('prestige-btn').disabled = state.coins < 100000;
-      updateBoostUI(); updateRainbowBoostUI(); updateCardUI(); updateSkinGrid();
+      updateBoostUI(); updateRainbowBoostUI(); updateCardUI(); updateSkinGrids(); updateThemesGrid();
       document.getElementById('click-core').textContent = state.currentSkin;
       renderProgress(document.getElementById('multiplierProgress'), state.multiplierBonusCount);
       renderProgress(document.getElementById('autoProgress'), state.autoBonusCount);
     }
 
-    function updateCardUI() {
-      if (state.ogPurchased) { document.getElementById('ogStatus').textContent='✅ +10'; document.getElementById('buyOgBtn').disabled=true; document.getElementById('buyOgBtn').textContent='✔️'; }
-      else { document.getElementById('ogStatus').textContent='🍎10к'; document.getElementById('buyOgBtn').disabled=state.coins<10000; document.getElementById('buyOgBtn').textContent='💰'; }
-      if (state.rainbowPurchased) { document.getElementById('rainbowStatus').textContent='✅ +10'; document.getElementById('buyRainbowBtn').disabled=true; document.getElementById('buyRainbowBtn').textContent='✔️'; document.getElementById('rainbowBoostBar').style.display='flex'; }
-      else { document.getElementById('rainbowStatus').textContent='🍎15к'; document.getElementById('buyRainbowBtn').disabled=state.coins<15000; document.getElementById('buyRainbowBtn').textContent='💰'; document.getElementById('rainbowBoostBar').style.display='none'; }
-      if (state.sonicPurchased) { document.getElementById('sonicStatus').textContent='✅ +10а'; document.getElementById('buySonicBtn').disabled=true; document.getElementById('buySonicBtn').textContent='✔️'; }
-      else { document.getElementById('sonicStatus').textContent='🍎25к'; document.getElementById('buySonicBtn').disabled=state.coins<25000; document.getElementById('buySonicBtn').textContent='💰'; }
-      if (state.poopCardPurchased) { document.getElementById('poopStatus').textContent='✅ Скин 💩'; document.getElementById('buyPoopBtn').disabled=true; document.getElementById('buyPoopBtn').textContent='✔️'; }
-      else { document.getElementById('poopStatus').textContent='🍎100к'; document.getElementById('buyPoopBtn').disabled=state.coins<100000; document.getElementById('buyPoopBtn').textContent='💰'; }
+    function updateThemesGrid() {
+      const container = document.getElementById('themesGrid');
+      if (!container) return;
+      container.innerHTML = '';
+      const ownedThemes = state.ownedThemes || ['default'];
+      
+      themesList.forEach(theme => {
+        let isAvailable = true;
+        let requiredText = '';
+        
+        if (theme.requiredCard === 'rainbowPurchased' && !state.rainbowPurchased) {
+          isAvailable = false;
+          requiredText = ' (нужна карта Радужный)';
+        }
+        if (theme.requiredCard === 'matrixThemeCardPurchased' && !state.matrixThemeCardPurchased) {
+          isAvailable = false;
+          requiredText = ' (нужна карта Матрица)';
+        }
+        
+        const isOwned = ownedThemes.includes(theme.id);
+        const isActive = state.currentTheme === theme.id;
+        
+        const d = document.createElement('div');
+        d.className = `skin-item ${isActive ? 'equipped' : ''} ${!isAvailable || !isOwned ? 'locked' : ''}`;
+        d.style.borderColor = isActive ? '#ff9800' : '#8bc34a';
+        d.innerHTML = `
+          <span>${theme.name}</span>
+          <div style="font-size:0.6rem;color:#ffcc80;">${requiredText || (theme.price === 0 ? 'Бесплатно' : theme.price + ' 🍎')}</div>
+          ${isOwned ? '<div class="skin-owned">✅</div>' : ''}
+        `;
+        
+        d.addEventListener('click', () => {
+          if (!currentUser) { showToast('Сначала зарегистрируйтесь!'); return; }
+          if (!isAvailable) {
+            showToast(`❌ Тема недоступна! ${requiredText}`, false);
+            return;
+          }
+          if (isOwned) {
+            state.currentTheme = theme.id;
+            applyTheme(theme.id);
+            saveUserProgress();
+            updateUI();
+            showToast(`🎨 Тема "${theme.name}" применена!`, true);
+          } else if (state.coins >= theme.price) {
+            state.coins -= theme.price;
+            state.ownedThemes.push(theme.id);
+            state.currentTheme = theme.id;
+            applyTheme(theme.id);
+            saveUserProgress();
+            updateUI();
+            playSound('card');
+            showToast(`🎨 Тема "${theme.name}" куплена за ${theme.price} 🍎!`, true);
+          } else {
+            showToast(`❌ Недостаточно 🍎! Нужно ${theme.price}`, false);
+          }
+        });
+        container.appendChild(d);
+      });
     }
 
-    function updateSkinGrid() {
-      const skinGrid = document.getElementById('skinGrid'); if (!skinGrid) return; skinGrid.innerHTML = '';
+    function updateCardUI() {
+      const ogBtn = document.getElementById('buyOgBtn');
+      if (state.ogPurchased) { document.getElementById('ogStatus').textContent='✅ +10'; ogBtn.disabled=true; ogBtn.textContent='✔️'; }
+      else { document.getElementById('ogStatus').textContent='🍎10к'; ogBtn.disabled=state.coins<10000; ogBtn.textContent='💰'; }
+      
+      const rainbowBtn = document.getElementById('buyRainbowBtn');
+      if (state.rainbowPurchased) { document.getElementById('rainbowStatus').textContent='✅ +10'; rainbowBtn.disabled=true; rainbowBtn.textContent='✔️'; document.getElementById('rainbowBoostBar').style.display='flex'; }
+      else { document.getElementById('rainbowStatus').textContent='🍎15к'; rainbowBtn.disabled=state.coins<15000; rainbowBtn.textContent='💰'; document.getElementById('rainbowBoostBar').style.display='none'; }
+      
+      const sonicBtn = document.getElementById('buySonicBtn');
+      if (state.sonicPurchased) { document.getElementById('sonicStatus').textContent='✅ +10а'; sonicBtn.disabled=true; sonicBtn.textContent='✔️'; }
+      else { document.getElementById('sonicStatus').textContent='🍎25к'; sonicBtn.disabled=state.coins<25000; sonicBtn.textContent='💰'; }
+      
+      const poopBtn = document.getElementById('buyPoopBtn');
+      if (state.poopCardPurchased) { document.getElementById('poopStatus').textContent='✅ Скин 💩'; poopBtn.disabled=true; poopBtn.textContent='✔️'; }
+      else { document.getElementById('poopStatus').textContent='🍎100к'; poopBtn.disabled=state.coins<100000; poopBtn.textContent='💰'; }
+      
+      const matrixBtn = document.getElementById('buyMatrixThemeBtn');
+      if (state.matrixThemeCardPurchased) { document.getElementById('matrixStatus').textContent='✅ Тема Матрица'; matrixBtn.disabled=true; matrixBtn.textContent='✔️'; }
+      else { document.getElementById('matrixStatus').textContent='🍎25к'; matrixBtn.disabled=state.coins<25000; matrixBtn.textContent='💰'; }
+    }
+
+    function updateSkinGrids() {
+      const container = document.getElementById('skinGridContent');
+      if (!container) return;
+      container.innerHTML = '';
       let owned = state.ownedSkins || ['🥒'];
       const availableSkins = allSkins.filter(skin => {
         if (skin.requiredCard === 'poopCard' && !state.poopCardPurchased) return false;
@@ -482,17 +767,30 @@
           else if (state.coins >= s.price) { state.coins -= s.price; state.ownedSkins.push(s.emoji); state.currentSkin = s.emoji; saveUserProgress(); updateUI(); playSound('card'); } 
           else showToast('Недостаточно фруктов!'); 
         }); 
-        skinGrid.appendChild(d); 
+        container.appendChild(d); 
       });
     }
 
     function updateBoostUI() { const now = Date.now(); if (state.boostActive && now < state.boostEndTime) { const rem = Math.ceil((state.boostEndTime - now)/1000); document.getElementById('boostTimer').textContent = `${Math.floor(rem/60)}:${(rem%60).toString().padStart(2,'0')}`; document.getElementById('boostBtn').disabled = true; } else { state.boostActive = false; const cd = 24*60*60*1000; const since = now - (state.lastBoostTime||0); if (since < cd) { const rem = cd - since; document.getElementById('boostTimer').textContent = `${Math.floor(rem/3600000)}ч`; document.getElementById('boostBtn').disabled = true; } else { document.getElementById('boostTimer').textContent = 'OK'; document.getElementById('boostBtn').disabled = false; } } }
-    function updateRainbowBoostUI() { if (!state.rainbowPurchased) return; const now = Date.now(); if (state.rainbowBoostActive && now < state.rainbowBoostEndTime) { const rem = Math.ceil((state.rainbowBoostEndTime - now)/1000); document.getElementById('rainbowBoostTimer').textContent = `${Math.floor(rem/60)}:${(rem%60).toString().padStart(2,'0')}`; document.getElementById('rainbowBoostBtn').disabled = true; document.body.classList.add('rainbow-mode'); if (!window.rainbowInterval) { window.rainbowInterval = setInterval(spawnRainbowEmoji, 300); } } else { state.rainbowBoostActive = false; document.body.classList.remove('rainbow-mode'); if (window.rainbowInterval) { clearInterval(window.rainbowInterval); window.rainbowInterval = null; } const cd = 24*60*60*1000; const since = now - (state.lastRainbowBoostTime||0); if (since < cd) { const rem = cd - since; document.getElementById('rainbowBoostTimer').textContent = `${Math.floor(rem/3600000)}ч`; document.getElementById('rainbowBoostBtn').disabled = true; } else { document.getElementById('rainbowBoostTimer').textContent = 'OK'; document.getElementById('rainbowBoostBtn').disabled = false; } } }
-    function spawnRainbowEmoji() { const emoji = document.createElement('div'); emoji.className = 'flying-emoji'; emoji.textContent = ['🍎','🥒','🍊','🎃','🍌'][Math.floor(Math.random()*5)]; emoji.style.left = Math.random()*80 + '%'; emoji.style.top = Math.random()*80 + '%'; document.body.appendChild(emoji); setTimeout(() => emoji.remove(), 2000); }
+    
+    function updateRainbowBoostUI() { if (!state.rainbowPurchased) return; const now = Date.now(); if (state.rainbowBoostActive && now < state.rainbowBoostEndTime) { const rem = Math.ceil((state.rainbowBoostEndTime - now)/1000); document.getElementById('rainbowBoostTimer').textContent = `${Math.floor(rem/60)}:${(rem%60).toString().padStart(2,'0')}`; document.getElementById('rainbowBoostBtn').disabled = true; document.body.classList.add('rainbow-mode'); if (!window.rainbowInterval) { window.rainbowInterval = setInterval(() => { const emoji = document.createElement('div'); emoji.className = 'flying-emoji'; emoji.textContent = ['🍎','🥒','🍊','🎃','🍌'][Math.floor(Math.random()*5)]; emoji.style.left = Math.random()*80 + '%'; emoji.style.top = Math.random()*80 + '%'; document.body.appendChild(emoji); setTimeout(() => emoji.remove(), 2000); }, 300); } } else { state.rainbowBoostActive = false; document.body.classList.remove('rainbow-mode'); if (window.rainbowInterval) { clearInterval(window.rainbowInterval); window.rainbowInterval = null; } const cd = 24*60*60*1000; const since = now - (state.lastRainbowBoostTime||0); if (since < cd) { const rem = cd - since; document.getElementById('rainbowBoostTimer').textContent = `${Math.floor(rem/3600000)}ч`; document.getElementById('rainbowBoostBtn').disabled = true; } else { document.getElementById('rainbowBoostTimer').textContent = 'OK'; document.getElementById('rainbowBoostBtn').disabled = false; } } }
 
-    function renderDailyQuests() { const container = document.getElementById('dailyQuestList'); const progress = state.dailyProgress || {}; container.innerHTML = dailyQuests.map(q => { const done = progress[q.id] >= q.target; return `<div class="quest-item ${done ? 'quest-done' : ''}">${q.desc} (${progress[q.id]||0}/${q.target}) ${done ? '✅' : '— 🍎'+q.reward}</div>`; }).join(''); const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1); tomorrow.setHours(0,0,0,0); const diff = tomorrow - now; const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000); document.getElementById('daily-reset-timer').textContent = `Сброс через ${h}ч ${m}м`; }
+    function renderDailyQuests() { 
+      const container = document.getElementById('dailyQuestListPage'); 
+      const progress = state.dailyProgress || {}; 
+      if(container) container.innerHTML = dailyQuests.map(q => { const done = progress[q.id] >= q.target; return `<div class="quest-item ${done ? 'quest-done' : ''}">${q.desc} (${progress[q.id]||0}/${q.target}) ${done ? '✅' : '— 🍎'+q.reward}</div>`; }).join(''); 
+      const timerSpan = document.getElementById('daily-reset-timer-page');
+      if(timerSpan) { const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1); tomorrow.setHours(0,0,0,0); const diff = tomorrow - now; const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000); timerSpan.textContent = `Сброс через ${h}ч ${m}м`; }
+    }
+    
     function checkDailyQuest(id) { if (!state.dailyProgress) state.dailyProgress = {}; if (state.dailyProgress[id] === undefined) state.dailyProgress[id] = 0; state.dailyProgress[id]++; const quest = dailyQuests.find(q => q.id === id); if (quest && state.dailyProgress[id] === quest.target) { state.coins += quest.reward; showToast(`✅ Задание! +${quest.reward} 🍎`, true); saveUserProgress(); updateUI(); } saveUserProgress(); }
-    function renderAchievements() { const container = document.getElementById('achievementList'); container.innerHTML = achievements.map(a => { const done = state.claimedAchievements.includes(a.id); const canClaim = !done && a.check(state); return `<div class="quest-item ${done ? 'quest-done' : ''}">${a.desc} ${done ? '✅' : canClaim ? '<button class="buy-card-btn" onclick="window.claimAchievement(\''+a.id+'\')">🍎'+a.reward+'</button>' : '🔒'}</div>`; }).join(''); }
+    
+    function renderAchievements() { 
+      const container = document.getElementById('achievementListPage'); 
+      if(!container) return;
+      container.innerHTML = achievements.map(a => { const done = state.claimedAchievements.includes(a.id); const canClaim = !done && a.check(state); return `<div class="quest-item ${done ? 'quest-done' : ''}">${a.desc} ${done ? '✅' : canClaim ? '<button class="buy-card-btn" onclick="window.claimAchievement(\''+a.id+'\')">🍎'+a.reward+'</button>' : '🔒'}</div>`; }).join(''); 
+    }
+    
     window.claimAchievement = function(id) { const a = achievements.find(x => x.id === id); if (!a || state.claimedAchievements.includes(id) || !a.check(state)) return; state.coins += a.reward; state.claimedAchievements.push(id); saveUserProgress(); updateUI(); renderAchievements(); showToast(`🏅 +${a.reward} 🍎`, true); };
 
     function showToast(msg, green=false) { const t = document.createElement('div'); t.className = 'toast' + (green ? ' green' : ''); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); }
@@ -502,292 +800,193 @@
 
     function handleClick() { if (!isLoggedIn()) return; if (!antiCheat.checkClick()) return; let perClick = state.clickMultiplier + state.prestigeBonus; if (state.ogPurchased) perClick += 10; if (state.rainbowPurchased) perClick += 10; if (state.boostActive || state.rainbowBoostActive) perClick *= 5; addCoins(perClick, document.getElementById('click-core')); state.totalClicks++; checkDailyQuest('clicks100'); const el = document.getElementById('click-core'); el.style.transform = 'scale(0.9)'; setTimeout(() => { if(el) el.style.transform = ''; }, 80); playSound('click'); }
 
-    document.getElementById('buyOgBtn').addEventListener('click', () => { if (state.ogPurchased) { showEasterEgg(); return; } if (!isLoggedIn()) return; if (state.coins >= 10000 && !state.ogPurchased) { state.coins -= 10000; state.ogPurchased = true; updateUI(); saveUserProgress(); playSound('card'); } });
-    document.getElementById('buyPoopBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins >= 100000 && !state.poopCardPurchased) { state.coins -= 100000; state.poopCardPurchased = true; updateUI(); saveUserProgress(); playSound('card'); showToast('💩 Карта "Отсылка" куплена! Скин какашки теперь доступен!', true); } });
-    
-    function showEasterEgg() { const overlay = document.createElement('div'); overlay.className = 'easter-egg'; overlay.innerHTML = '<span style="font-size:3rem;">🥒💩🍎</span><br>Огурец на Гаити превратился в какашку!'; document.body.appendChild(overlay); document.body.style.pointerEvents = 'none'; const interval = setInterval(() => { const emoji = document.createElement('div'); emoji.style.position = 'fixed'; emoji.style.fontSize = '2rem'; emoji.style.zIndex = '999'; emoji.style.left = Math.random()*100 + '%'; emoji.style.top = Math.random()*100 + '%'; emoji.textContent = ['🥒','💩','🍎','🍊','🍌'][Math.floor(Math.random()*5)]; document.body.appendChild(emoji); setTimeout(() => emoji.remove(), 1000); }, 300); setTimeout(() => { overlay.remove(); clearInterval(interval); document.body.style.pointerEvents = ''; }, 10000); }
-
-    document.getElementById('btn-multiplier').addEventListener('click', () => {
-      if (!isLoggedIn()) return;
-      if (state.coins < state.multiplierCost) return;
-      state.coins -= state.multiplierCost;
-      state.clickMultiplier++;
-      state.multiplierLevel++;
-      state.multiplierBonusCount++;
-
-      if (state.multiplierBonusCount === 5) {
-        state.clickMultiplier += 2;
-        state.multiplierBonusCount = 0;
-        state.multiplierBonusStep++;
-      }
-
-      state.multiplierCost = Math.floor(state.multiplierCost * 1.6) + 2 + state.multiplierBonusStep * 5;
-      checkDailyQuest('upgrade50');
-      updateUI();
-      saveUserProgress();
-      playSound('purchase');
-    });
-
-    document.getElementById('btn-autoclick').addEventListener('click', () => {
-      if (!isLoggedIn()) return;
-      if (state.coins < state.autoclickCost) return;
-      state.coins -= state.autoclickCost;
-      state.autoCoinsPerSec += 0.5;
-      state.autoclickLevel++;
-      state.autoBonusCount++;
-
-      if (state.autoBonusCount === 5) {
-        state.autoCoinsPerSec += 1;
-        state.autoBonusCount = 0;
-        state.autoBonusStep++;
-      }
-
-      state.autoclickCost = Math.floor(state.autoclickCost * 1.7) + 5 + state.autoBonusStep * 3;
-      checkDailyQuest('upgrade50');
-      updateUI();
-      saveUserProgress();
-      playSound('purchase');
-    });
-
-    document.getElementById('reset-stats').addEventListener('click', () => { if (!isLoggedIn()) return; if (confirm('Сбросить весь прогресс?')) { state = defaultState(); updateUI(); saveUserProgress(); } });
-    document.getElementById('prestige-btn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins < 100000) return; if (!confirm('Сбросить прогресс ради +1 к клику навсегда?')) return; state.coins = 100; state.totalClicks = 0; state.clickMultiplier = 1; state.autoCoinsPerSec = 0; state.multiplierCost = 15; state.autoclickCost = 50; state.multiplierLevel = 0; state.autoclickLevel = 0; state.multiplierBonusCount = 0; state.autoBonusCount = 0; state.multiplierBonusStep = 0; state.autoBonusStep = 0; state.prestigeCount = (state.prestigeCount || 0) + 1; state.prestigeBonus = (state.prestigeBonus || 0) + 1; updateUI(); saveUserProgress(); showToast('⬆️ Престиж! +1 к клику!', true); });
-    document.getElementById('boostBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.boostActive) return; const cd = 24*60*60*1000; if (Date.now() - (state.lastBoostTime||0) < cd) return; state.lastBoostTime = Date.now(); state.boostActive = true; state.boostEndTime = Date.now() + 60000; checkDailyQuest('boost'); updateUI(); saveUserProgress(); setTimeout(() => { state.boostActive = false; updateUI(); saveUserProgress(); }, 60000); playSound('click'); });
-    document.getElementById('rainbowBoostBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (!state.rainbowPurchased || state.rainbowBoostActive) return; const cd = 24*60*60*1000; if (Date.now() - (state.lastRainbowBoostTime||0) < cd) return; state.lastRainbowBoostTime = Date.now(); state.rainbowBoostActive = true; state.rainbowBoostEndTime = Date.now() + 60000; updateUI(); saveUserProgress(); setTimeout(() => { state.rainbowBoostActive = false; updateUI(); saveUserProgress(); }, 60000); playSound('click'); });
+    // Покупки
+    document.getElementById('buyOgBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins >= 10000 && !state.ogPurchased) { state.coins -= 10000; state.ogPurchased = true; updateUI(); saveUserProgress(); playSound('card'); } });
     document.getElementById('buyRainbowBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins >= 15000 && !state.rainbowPurchased) { state.coins -= 15000; state.rainbowPurchased = true; updateUI(); saveUserProgress(); playSound('card'); } });
     document.getElementById('buySonicBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins >= 25000 && !state.sonicPurchased) { state.coins -= 25000; state.sonicPurchased = true; updateUI(); saveUserProgress(); playSound('card'); } });
+    document.getElementById('buyPoopBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins >= 100000 && !state.poopCardPurchased) { state.coins -= 100000; state.poopCardPurchased = true; updateUI(); saveUserProgress(); playSound('card'); showToast('💩 Карта "Отсылка" куплена! Скин какашки теперь доступен!', true); } });
+    document.getElementById('buyMatrixThemeBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins >= 25000 && !state.matrixThemeCardPurchased) { state.coins -= 25000; state.matrixThemeCardPurchased = true; updateUI(); saveUserProgress(); playSound('card'); showToast('🔮 Карта "Матрица" куплена! Теперь доступна тема Матрица за 5555 🍎!', true); } });
 
-    // Темы
-    let themeMenuOpen = false;
-    const themePreview = document.getElementById('themePreview');
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    document.getElementById('btn-multiplier').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins < state.multiplierCost) return; state.coins -= state.multiplierCost; state.clickMultiplier++; state.multiplierLevel++; state.multiplierBonusCount++; if (state.multiplierBonusCount === 5) { state.clickMultiplier += 2; state.multiplierBonusCount = 0; state.multiplierBonusStep++; } state.multiplierCost = Math.floor(state.multiplierCost * 1.6) + 2 + state.multiplierBonusStep * 5; checkDailyQuest('upgrade50'); updateUI(); saveUserProgress(); playSound('purchase'); });
+    document.getElementById('btn-autoclick').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins < state.autoclickCost) return; state.coins -= state.autoclickCost; state.autoCoinsPerSec += 0.5; state.autoclickLevel++; state.autoBonusCount++; if (state.autoBonusCount === 5) { state.autoCoinsPerSec += 1; state.autoBonusCount = 0; state.autoBonusStep++; } state.autoclickCost = Math.floor(state.autoclickCost * 1.7) + 5 + state.autoBonusStep * 3; checkDailyQuest('upgrade50'); updateUI(); saveUserProgress(); playSound('purchase'); });
+    document.getElementById('reset-stats').addEventListener('click', () => { if (!isLoggedIn()) return; if (confirm('Сбросить весь прогресс?')) { state = defaultState(); updateUI(); saveUserProgress(); } });
+    document.getElementById('prestige-btn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.coins < 100000) return; if (!confirm('Сбросить прогресс ради +1 к клику навсегда?')) return; state.coins = 100; state.totalClicks = 0; state.clickMultiplier = 1; state.autoCoinsPerSec = 0; state.multiplierCost = 15; state.autoclickCost = 50; state.multiplierLevel = 0; state.autoclickLevel = 0; state.multiplierBonusCount = 0; state.autoBonusCount = 0; state.multiplierBonusStep = 0; state.autoBonusStep = 0; state.prestigeCount++; state.prestigeBonus++; updateUI(); saveUserProgress(); showToast('⬆️ Престиж! +1 к клику!', true); });
+    document.getElementById('boostBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (state.boostActive) return; const cd = 24*60*60*1000; if (Date.now() - (state.lastBoostTime||0) < cd) return; state.lastBoostTime = Date.now(); state.boostActive = true; state.boostEndTime = Date.now() + 60000; checkDailyQuest('boost'); updateUI(); saveUserProgress(); setTimeout(() => { state.boostActive = false; updateUI(); saveUserProgress(); }, 60000); playSound('click'); });
+    document.getElementById('rainbowBoostBtn').addEventListener('click', () => { if (!isLoggedIn()) return; if (!state.rainbowPurchased || state.rainbowBoostActive) return; const cd = 24*60*60*1000; if (Date.now() - (state.lastRainbowBoostTime||0) < cd) return; state.lastRainbowBoostTime = Date.now(); state.rainbowBoostActive = true; state.rainbowBoostEndTime = Date.now() + 60000; updateUI(); saveUserProgress(); setTimeout(() => { state.rainbowBoostActive = false; updateUI(); saveUserProgress(); }, 60000); playSound('click'); });
+
+    // Меню
+    const menuPanel = document.getElementById('menuPanel');
+    const menuBtn = document.getElementById('menuBtn');
+    const menuClose = document.getElementById('menuCloseBtn');
     
-    function renderThemeMenu() {
-      const ownedThemes = state.ownedThemes || ['default'];
-      themePreview.innerHTML = '';
-      themes.forEach(theme => {
-        const isOwned = ownedThemes.includes(theme.id);
-        const isActive = state.currentTheme === theme.id;
-        const option = document.createElement('div');
-        option.className = 'theme-option';
-        option.style.background = theme.id === 'default' ? '#1a2a1a' : 
-                                  theme.id === 'ocean' ? '#0a2a3a' :
-                                  theme.id === 'fire' ? '#3a1a1a' :
-                                  theme.id === 'forest' ? '#1a3a1a' :
-                                  theme.id === 'night' ? '#1a1a2a' : '#3a2a4a';
-        option.style.color = '#ffcc80';
-        option.style.border = isActive ? '2px solid #ff9800' : '1px solid #ffcc80';
-        option.innerHTML = `${theme.name} ${isOwned ? (isActive ? '✅' : '') : '🔒'}<br><small style="font-size:0.6rem;">${isOwned ? 'Куплен' : theme.price+'🍎'}</small>`;
-        option.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (isOwned) {
-            state.currentTheme = theme.id;
-            applyTheme(theme.id);
-            saveUserProgress();
-            showToast(`🎨 Тема "${theme.name}" применена!`, true);
-            renderThemeMenu();
-          } else if (state.coins >= theme.price) {
-            state.coins -= theme.price;
-            state.ownedThemes.push(theme.id);
-            saveUserProgress();
-            updateUI();
-            showToast(`🎨 Тема "${theme.name}" куплена за ${theme.price} 🍎!`, true);
-            renderThemeMenu();
-          } else {
-            showToast(`❌ Недостаточно 🍎 для темы "${theme.name}"! Нужно ${theme.price}`, false);
-          }
-          themeMenuOpen = false;
-          themePreview.classList.add('hidden');
-        });
-        themePreview.appendChild(option);
-      });
+    function closeAllPages() {
+      document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
     }
     
-    themeToggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!isLoggedIn()) return;
-      themeMenuOpen = !themeMenuOpen;
-      if (themeMenuOpen) {
-        renderThemeMenu();
-        themePreview.classList.remove('hidden');
+    function openPage(pageId) {
+      closeAllPages();
+      const page = document.getElementById('page' + pageId.charAt(0).toUpperCase() + pageId.slice(1));
+      if (page) {
+        page.classList.add('active');
+        if (pageId === 'daily') renderDailyQuests();
+        if (pageId === 'achievements') renderAchievements();
+        if (pageId === 'skins') updateSkinGrids();
+        if (pageId === 'themes') updateThemesGrid();
+      }
+    }
+    
+    menuBtn.addEventListener('click', () => { menuPanel.classList.add('active'); });
+    menuClose.addEventListener('click', () => { menuPanel.classList.remove('active'); });
+    
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const page = item.dataset.page;
+        if (item.classList.contains('disabled')) {
+          showToast('⏳ Ждите в обнове!', false);
+          return;
+        }
+        menuPanel.classList.remove('active');
+        openPage(page);
+      });
+    });
+    
+    document.querySelectorAll('.content-close').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.content-page').classList.remove('active');
+      });
+    });
+    
+    // Профиль (только выход)
+    document.getElementById('profileCloud').addEventListener('click', () => {
+      if (!currentUser) {
+        const lastUsers = getLastUsers();
+        let promptText = 'Логин:';
+        if (lastUsers.length > 0) promptText += '\nБыстрый: ' + lastUsers.join(', ');
+        const u = prompt(promptText);
+        if (!u) return;
+        const db = getUsersDB();
+        if (db[u]) {
+          const p = prompt('Пароль:');
+          if (db[u] === p) { loginUser(u); updateUI(); showToast(`Привет, ${u}!`, true); }
+          else showToast('Неверный пароль');
+        } else {
+          const p = prompt('Придумай пароль (мин 3):');
+          if (!p || p.length<3) return showToast('Короткий!');
+          db[u] = p; saveUsersDB(db); loginUser(u); state.coins += 100; saveUserProgress(); updateUI(); showToast(`Создан! +100 🍎`, true);
+        }
       } else {
-        themePreview.classList.add('hidden');
+        if (confirm('Выйти из аккаунта?')) { logoutUser(); updateUI(); showToast('Вы вышли', true); }
       }
     });
     
-    document.addEventListener('click', (e) => {
-      if (!themePreview.contains(e.target) && e.target !== themeToggleBtn) {
-        themePreview.classList.add('hidden');
-        themeMenuOpen = false;
-      }
-    });
-
     // Звук
-    const soundToggle = document.getElementById('soundToggle');
-    soundToggle.addEventListener('click', function() { soundEnabled = !soundEnabled; this.textContent = soundEnabled ? '🔊' : '🔇'; this.classList.toggle('muted', !soundEnabled); });
-
+    const soundToggles = ['soundToggleMain', 'soundTogglePage', 'soundTogglePageThemes', 'soundTogglePage2', 'soundTogglePage3', 'soundTogglePage4'];
+    soundToggles.forEach(id => {
+      const btn = document.getElementById(id);
+      if(btn) btn.addEventListener('click', () => { soundEnabled = !soundEnabled; document.querySelectorAll('.settings-btn').forEach(b => { if(b.id.includes('sound')) { b.textContent = soundEnabled ? '🔊' : '🔇'; b.classList.toggle('muted', !soundEnabled); } }); });
+    });
+    
     // Комбинации
     function buildNumpad() { const numpad = document.getElementById('numpad'); for (let i=1; i<=9; i++) { const btn = document.createElement('button'); btn.className = 'numpad-btn'; btn.textContent = i; btn.addEventListener('click', () => { numpadCode += i; updateNumpadDisplay(); }); numpad.appendChild(btn); } const btn0 = document.createElement('button'); btn0.className = 'numpad-btn'; btn0.textContent = '0'; btn0.addEventListener('click', () => { numpadCode += '0'; updateNumpadDisplay(); }); numpad.appendChild(btn0); const btnClear = document.createElement('button'); btnClear.className = 'numpad-btn'; btnClear.textContent = '⌫'; btnClear.addEventListener('click', () => { numpadCode = numpadCode.slice(0,-1); updateNumpadDisplay(); }); numpad.appendChild(btnClear); }
     function updateNumpadDisplay() { document.getElementById('numpadDisplay').textContent = numpadCode || '····'; }
-
+    
     document.getElementById('numpadSubmit').addEventListener('click', () => {
       const code = numpadCode; numpadCode = ''; updateNumpadDisplay();
-      
-      // Промокод 67 - 1000 монет
       if (code === '67') { 
         if (!currentUser) { showToast('Сначала войдите в аккаунт!'); return; } 
         if (usedPromoCodes[currentUser.username]) { showToast('Вы уже использовали промокод!'); return; } 
-        state.coins += 1000; 
-        usedPromoCodes[currentUser.username] = true; 
-        localStorage.setItem(`promo_${currentUser.username}`, 'true'); 
-        saveUserProgress(); updateUI(); 
-        showToast('🎁 +1000 🍎', true); 
-        return; 
+        state.coins += 1000; usedPromoCodes[currentUser.username] = true; localStorage.setItem(`promo_${currentUser.username}`, 'true'); saveUserProgress(); updateUI(); showToast('🎁 +1000 🍎', true); return; 
       }
-      
-      // КОМБИНАЦИЯ 7240 - 5000 монет (2 раза!)
       if (code === '7240') { 
         if (!currentUser) { showToast('Сначала войдите в аккаунт!'); return; }
-        
         const key = `combo_7240_${currentUser.username}`;
         let uses = parseInt(localStorage.getItem(key) || '0');
-        
-        if (uses >= 2) {
-          showToast('❌ Комбинация больше не работает!', false);
-          return;
-        }
-        
+        if (uses >= 2) { showToast('❌ Комбинация больше не работает!', false); return; }
         uses++;
         localStorage.setItem(key, uses.toString());
         state.coins += 5000;
-        saveUserProgress(); 
-        updateUI();
-        
-        if (uses === 1) {
+        saveUserProgress(); updateUI();
+        if (uses === 1) { showToast('🌈 +5000 🍎 по секретной комбинации!', true); playSound('card'); }
+        else if (uses === 2) {
           showToast('🌈 +5000 🍎 по секретной комбинации!', true);
           playSound('card');
-        } else if (uses === 2) {
-          showToast('🌈 +5000 🍎 по секретной комбинации!', true);
-          playSound('card');
-          
-          // ПОКАЗЫВАЕМ НА ВЕСЬ ЭКРАН "НЕ БАГ А ФИЧА"
           const fullscreenDiv = document.createElement('div');
-          fullscreenDiv.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #000, #1a0000);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: clamp(1.5rem, 8vw, 4rem);
-            font-weight: bold;
-            color: #ff4444;
-            text-shadow: 0 0 30px #ff0000, 0 0 60px #ff6600;
-            font-family: monospace;
-            flex-direction: column;
-            gap: 20px;
-            animation: fadeInOut 3s ease-in-out forwards;
-            pointer-events: none;
-          `;
-          fullscreenDiv.innerHTML = `
-            <span style="font-size: 4rem;">🍌</span>
-            <span>НЕ БАГ, А ФИЧА</span>
-            <span style="font-size: 1rem; color: #ffcc80;">+5000 🍎</span>
-          `;
-          
-          const style = document.createElement('style');
-          style.textContent = `
-            @keyframes fadeInOut {
-              0% { opacity: 0; transform: scale(0.9); }
-              15% { opacity: 1; transform: scale(1); }
-              85% { opacity: 1; transform: scale(1); }
-              100% { opacity: 0; transform: scale(1.1); visibility: hidden; }
-            }
-          `;
+          fullscreenDiv.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#000,#1a0000);z-index:10000;display:flex;justify-content:center;align-items:center;font-size:clamp(1.5rem,8vw,4rem);font-weight:bold;color:#ff4444;text-shadow:0 0 30px #ff0000;font-family:monospace;flex-direction:column;gap:20px;animation:fadeInOut 3s ease-in-out forwards;pointer-events:none;`;
+          fullscreenDiv.innerHTML = `<span style="font-size:4rem;">🍌</span><span>НЕ БАГ, А ФИЧА</span><span style="font-size:1rem;color:#ffcc80;">+5000 🍎</span>`;
+          const style = document.createElement('style'); style.textContent = `@keyframes fadeInOut{0%{opacity:0;transform:scale(0.9);}15%{opacity:1;transform:scale(1);}85%{opacity:1;transform:scale(1);}100%{opacity:0;transform:scale(1.1);visibility:hidden;}}`;
           document.head.appendChild(style);
           document.body.appendChild(fullscreenDiv);
-          
-          setTimeout(() => {
-            fullscreenDiv.remove();
-            style.remove();
-          }, 3000);
+          setTimeout(() => { fullscreenDiv.remove(); style.remove(); }, 3000);
         }
         return; 
       }
-      
-      // Админ-панель
-      if (code === '3586') { 
-        showAdminPanel(); 
-        playSound('glitch'); 
-        return; 
-      }
-      
+      if (code === '3586') { showAdminPanel(); playSound('glitch'); return; }
       showToast('Неверная комбинация!');
     });
-
+    
     function showAdminPanel() {
       const oldMatrix = document.getElementById('matrixBg'); if (oldMatrix) oldMatrix.remove();
       const oldClose = document.getElementById('closeMatrixBtn'); if (oldClose) oldClose.remove();
       const oldModal = document.getElementById('adminModalPanel'); if (oldModal) oldModal.remove();
-
-      const matrix = document.createElement('div'); matrix.className = 'matrix-bg'; matrix.id = 'matrixBg'; matrix.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:300;overflow:hidden;'; document.body.appendChild(matrix);
-      const canvas = document.createElement('canvas'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; matrix.appendChild(canvas);
-      const ctx = canvas.getContext('2d'); const chars = '🍎🥒🍊🎃💩✨🌈⚡🍌'; const drops = Array(Math.floor(canvas.width/25)).fill(0);
-      function drawMatrix() { ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#0f0'; ctx.font = '12px monospace'; for (let i=0; i<drops.length; i++) { const text = chars[Math.floor(Math.random()*chars.length)]; ctx.fillText(text, i*25, drops[i]*25); if (drops[i]*25 > canvas.height && Math.random() > 0.975) drops[i] = 0; drops[i]++; } }
-      const matrixInterval = setInterval(drawMatrix, 60);
-
+      
+      // Фон матрицы для админки
+      const matrixBg = document.createElement('div'); 
+      matrixBg.id = 'matrixBg';
+      matrixBg.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:300;overflow:hidden;'; 
+      document.body.appendChild(matrixBg);
+      
+      const canvas = document.createElement('canvas'); 
+      canvas.width = window.innerWidth; 
+      canvas.height = window.innerHeight; 
+      matrixBg.appendChild(canvas);
+      const ctx = canvas.getContext('2d'); 
+      const chars = '01'; 
+      const drops = Array(Math.floor(canvas.width/20)).fill(0);
+      let matrixAnimInterval;
+      function drawMatrix() { 
+        ctx.fillStyle = 'rgba(0,0,0,0.05)'; 
+        ctx.fillRect(0,0,canvas.width,canvas.height); 
+        ctx.fillStyle = '#0f0'; 
+        ctx.font = '14px monospace'; 
+        for (let i=0; i<drops.length; i++) { 
+          const text = chars[Math.floor(Math.random()*chars.length)]; 
+          ctx.fillText(text, i*20, drops[i]*20); 
+          if (drops[i]*20 > canvas.height && Math.random() > 0.975) drops[i] = 0; 
+          drops[i]++; 
+        } 
+      }
+      matrixAnimInterval = setInterval(drawMatrix, 50);
+      
       const adminModal = document.createElement('div'); adminModal.id = 'adminModalPanel';
-      adminModal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1d2b12;border:2px solid #ff9800;border-radius:1.5rem;padding:1.2rem;z-index:400;color:#ffcc80;width:90%;max-width:350px;max-height:80vh;overflow-y:auto;';
-      adminModal.innerHTML = `
-        <h3 style="text-align:center;">🔐 Админ-панель</h3>
-        <input type="text" id="adminTarget" placeholder="Логин игрока" style="width:100%;background:#0a0a0a;border:2px solid #ff9800;border-radius:1rem;padding:0.6rem;color:white;margin:0.5rem 0;">
-        <input type="number" id="adminValue" placeholder="Количество" value="1000" style="width:100%;background:#0a0a0a;border:2px solid #ff9800;border-radius:1rem;padding:0.6rem;color:white;margin:0.5rem 0;">
-        <button class="admin-btn-small" id="giveCoinsBtn" style="width:100%;margin:0.3rem 0;">🍎 Добавить фруктов</button>
-        <button class="admin-btn-small" id="addClickPowerBtn" style="width:100%;margin:0.3rem 0;">⚡ Добавить силу сбора</button>
-        <button class="admin-btn-small" id="addAutoClickBtn" style="width:100%;margin:0.3rem 0;background:#8bc34a;">🤖 Добавить авто-сбор</button>
-        <button class="admin-btn-small" id="crashAccountBtn" style="width:100%;margin:0.3rem 0;background:#b71c1c;">💥 Крашнуть аккаунт</button>
-        <button class="admin-btn-small" id="resetBoostsBtn" style="width:100%;margin:0.3rem 0;">🔄 Возобновить бусты</button>
-      `;
+      adminModal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1d2b12;border:2px solid #ff9800;border-radius:1.5rem;padding:1.2rem;z-index:400;color:#ffcc80;width:90%;max-width:350px;';
+      adminModal.innerHTML = `<h3 style="text-align:center;">🔐 Админ-панель</h3><input type="text" id="adminTarget" placeholder="Логин игрока" style="width:100%;background:#0a0a0a;border:2px solid #ff9800;border-radius:1rem;padding:0.6rem;color:white;margin:0.5rem 0;"><input type="number" id="adminValue" placeholder="Количество" value="1000" style="width:100%;background:#0a0a0a;border:2px solid #ff9800;border-radius:1rem;padding:0.6rem;color:white;margin:0.5rem 0;"><button id="giveCoinsBtn" style="width:100%;margin:0.3rem 0;background:#ff9800;border:none;color:white;padding:0.6rem;border-radius:1rem;">🍎 Добавить фруктов</button><button id="addClickPowerBtn" style="width:100%;margin:0.3rem 0;background:#ff9800;border:none;color:white;padding:0.6rem;border-radius:1rem;">⚡ Добавить силу сбора</button><button id="addAutoClickBtn" style="width:100%;margin:0.3rem 0;background:#8bc34a;border:none;color:black;padding:0.6rem;border-radius:1rem;">🤖 Добавить авто-сбор</button><button id="crashAccountBtn" style="width:100%;margin:0.3rem 0;background:#b71c1c;border:none;color:white;padding:0.6rem;border-radius:1rem;">💥 Крашнуть аккаунт</button><button id="resetBoostsBtn" style="width:100%;margin:0.3rem 0;background:#ff9800;border:none;color:white;padding:0.6rem;border-radius:1rem;">🔄 Возобновить бусты</button>`;
       document.body.appendChild(adminModal);
-
-      const closeBtn = document.createElement('button'); closeBtn.id = 'closeMatrixBtn'; closeBtn.textContent = '✕';
-      closeBtn.style.cssText = 'position:fixed;top:0.8rem;right:0.8rem;z-index:500;background:#ff4444;color:white;border:none;padding:0.6rem 1rem;border-radius:2rem;cursor:pointer;font-weight:bold;font-size:1.2rem;';
+      
+      const closeBtn = document.createElement('button'); 
+      closeBtn.textContent = '✕'; 
+      closeBtn.style.cssText = 'position:fixed;top:0.8rem;right:0.8rem;z-index:500;background:#ff4444;color:white;border:none;padding:0.6rem 1rem;border-radius:2rem;cursor:pointer;'; 
       document.body.appendChild(closeBtn);
-
-      function closeAdmin() { adminModal.remove(); matrix.remove(); clearInterval(matrixInterval); closeBtn.remove(); }
+      
+      function closeAdmin() { 
+        adminModal.remove(); 
+        matrixBg.remove(); 
+        clearInterval(matrixAnimInterval); 
+        closeBtn.remove(); 
+      }
       closeBtn.addEventListener('click', closeAdmin);
-
+      
       function getTargetData() { const t = document.getElementById('adminTarget').value.trim(); if (!t) { showToast('Укажите логин!'); return null; } const key = `fruit_progress_${t}`; const saved = localStorage.getItem(key); let data = {}; if (saved) { try { data = JSON.parse(saved); } catch(e) {} } return { key, data, username: t }; }
-
       document.getElementById('giveCoinsBtn').addEventListener('click', () => { const a = parseInt(document.getElementById('adminValue').value); if (isNaN(a) || a<=0) { showToast('Укажите количество!'); return; } const info = getTargetData(); if (!info) return; info.data.coins = (info.data.coins || 0) + a; localStorage.setItem(info.key, JSON.stringify(info.data)); if (currentUser?.username === info.username) { state.coins = info.data.coins; updateUI(); saveUserProgress(); } showToast(`✅ +${a} 🍎 игроку ${info.username}`, true); });
       document.getElementById('addClickPowerBtn').addEventListener('click', () => { const a = parseInt(document.getElementById('adminValue').value); if (isNaN(a) || a<=0) { showToast('Укажите количество!'); return; } const info = getTargetData(); if (!info) return; info.data.clickMultiplier = (info.data.clickMultiplier || 1) + a; localStorage.setItem(info.key, JSON.stringify(info.data)); if (currentUser?.username === info.username) { state.clickMultiplier = info.data.clickMultiplier; updateUI(); saveUserProgress(); } showToast(`✅ Сила +${a} игроку ${info.username}`, true); });
       document.getElementById('addAutoClickBtn').addEventListener('click', () => { const a = parseInt(document.getElementById('adminValue').value); if (isNaN(a) || a<=0) { showToast('Укажите количество!'); return; } const info = getTargetData(); if (!info) return; info.data.autoCoinsPerSec = (info.data.autoCoinsPerSec || 0) + a; localStorage.setItem(info.key, JSON.stringify(info.data)); if (currentUser?.username === info.username) { state.autoCoinsPerSec = info.data.autoCoinsPerSec; updateUI(); saveUserProgress(); } showToast(`✅ Авто +${a} игроку ${info.username}`, true); });
       document.getElementById('crashAccountBtn').addEventListener('click', () => { const t = document.getElementById('adminTarget').value.trim(); if (!t) { showToast('Укажите логин!'); return; } if (!confirm(`Удалить ВСЕ данные ${t}?`)) return; localStorage.removeItem(`fruit_progress_${t}`); const db = getUsersDB(); if (db[t]) { delete db[t]; saveUsersDB(db); } if (currentUser?.username === t) { logoutUser(); } showToast(`💥 ${t} крашнут`, true); });
       document.getElementById('resetBoostsBtn').addEventListener('click', () => { const t = document.getElementById('adminTarget').value.trim(); if (!t) { showToast('Укажите логин!'); return; } const key = `fruit_progress_${t}`; const saved = localStorage.getItem(key); if (saved) { try { const data = JSON.parse(saved); data.lastBoostTime = 0; data.lastRainbowBoostTime = 0; data.boostActive = false; data.rainbowBoostActive = false; localStorage.setItem(key, JSON.stringify(data)); if (currentUser?.username === t) { state.lastBoostTime = 0; state.lastRainbowBoostTime = 0; updateUI(); saveUserProgress(); } } catch(e) {} } showToast(`🔄 Бусты ${t} возобновлены`, true); });
     }
-
-    function switchModalTab(tab) {
-      ['skinModalContent','accountModalContent','messengerModalContent','dailyModalContent','achievementsModalContent'].forEach(id => { document.getElementById(id).style.display = 'none'; });
-      const map = { skins:'skinModalContent', account:'accountModalContent', messenger:'messengerModalContent', daily:'dailyModalContent', achievements:'achievementsModalContent' };
-      if (map[tab]) document.getElementById(map[tab]).style.display = 'block';
-      document.querySelectorAll('#tabPanel .tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector(`#tabPanel [data-tab="${tab}"]`)?.classList.add('active');
-      if (tab === 'account') document.getElementById('accountNameDisplay').textContent = currentUser ? `Вы: ${currentUser.username}` : 'Не вошли';
-      if (tab === 'daily') renderDailyQuests();
-      if (tab === 'achievements') renderAchievements();
-    }
-
-    document.getElementById('tabPanel').addEventListener('click', e => { if (e.target.classList.contains('tab-btn')) { switchModalTab(e.target.dataset.tab); } });
-    document.getElementById('profileCloud').addEventListener('click', () => { if (!currentUser) { const lastUsers = getLastUsers(); let promptText = 'Логин:'; if (lastUsers.length > 0) promptText += '\nБыстрый: ' + lastUsers.join(', '); const u = prompt(promptText); if (!u) return; const db = getUsersDB(); if (db[u]) { const p = prompt('Пароль:'); if (db[u] === p) { loginUser(u); updateUI(); showToast(`Привет, ${u}!`, true); } else showToast('Неверный пароль'); } else { const p = prompt('Придумай пароль (мин 3):'); if (!p || p.length<3) return showToast('Короткий!'); db[u] = p; saveUsersDB(db); loginUser(u); state.coins += 100; saveUserProgress(); updateUI(); showToast(`Создан! +100 🍎`, true); } } else { document.getElementById('modalOverlay').classList.add('active'); updateSkinGrid(); switchModalTab('skins'); } });
-    ['closeSkinModal','closeAccountModal','closeMessengerModal','closeDailyModal','closeAchievementsModal'].forEach(id => { document.getElementById(id)?.addEventListener('click', () => document.getElementById('modalOverlay').classList.remove('active')); });
-    document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('active'); });
-    document.getElementById('logoutBtn').addEventListener('click', () => { logoutUser(); document.getElementById('modalOverlay').classList.remove('active'); updateUI(); });
-
+    
     function renderProgress(container, count) { container.innerHTML = ''; for (let i=0; i<5; i++) { const dot = document.createElement('div'); dot.className = `dot ${i < count ? 'filled' : ''}`; container.appendChild(dot); } }
-
+    
+    function checkDailyReset() { const today = new Date().toDateString(); if (state.dailyResetDate !== today) { state.dailyProgress = { clicks100:0, upgrade50:0, boost:0 }; state.dailyResetDate = today; saveUserProgress(); } }
+    
     let lastAuto = Date.now();
     function autoTick() { 
       const now = Date.now(), delta = Math.min((now-lastAuto)/1000, 0.1); 
@@ -795,21 +994,18 @@
       if (state.sonicPurchased) autoVal += 10; 
       if (delta >= 0.016 && autoVal > 0) { 
         const earned = autoVal * delta; 
-        if (earned > 0) { 
-          state.coins += earned; 
-        } 
+        if (earned > 0) state.coins += earned;
         lastAuto = now - (delta%0.1)*1000; 
-        updateUI(); 
-        saveUserProgress(); 
+        updateUI(); saveUserProgress(); 
       } 
-      autoTickRequestId = requestAnimationFrame(autoTick); 
+      requestAnimationFrame(autoTick); 
     }
-
+    
     setInterval(() => { updateUI(); const indicator = document.getElementById('antiCheatIndicator'); const status = document.getElementById('antiCheatStatus'); if (antiCheat.penaltyActive && Date.now() < antiCheat.penaltyEndTime) { indicator.classList.add('penalty'); status.textContent = '🚫'; } else { indicator.classList.remove('penalty'); status.textContent = '🛡️'; if (antiCheat.penaltyActive) antiCheat.penaltyActive = false; } checkDailyReset(); }, 1000);
-
+    
     document.getElementById('click-core').addEventListener('click', handleClick);
     document.getElementById('click-core').addEventListener('touchstart', e => { e.preventDefault(); handleClick(); }, {passive:false});
-
+    
     function init() { buildNumpad(); updateNumpadDisplay(); loadSession(); if (currentUser) { loadUserProgress(); } else state = defaultState(); checkDailyReset(); updateUI(); lastAuto = Date.now(); autoTick(); }
     init();
   })();
